@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - npm install
+  build:
+    commands:
+      - echo "Building Beauzead Production Assets..."
+      - npm run build
+artifacts:
+  base-directory: dist
+  files:
+    - '**/*'
+cache:
+  paths:
+    - node_modules/**/*

@@ -1,0 +1,36 @@
+{
+  "name": "beauzead-ecommerce",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:server": "node --loader ts-node/esm backend/server.ts",
+    "dev:all": "concurrently \"vite\" \"node --loader ts-node/esm backend/server.ts\"",
+    "build": "vite build",
+    "build:server": "tsc backend/server.ts --outDir dist",
+    "preview": "vite preview",
+    "start": "node dist/backend/server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.35.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "stripe": "^14.13.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^8.2.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  }
+}

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauzead - Premium E-commerce Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f3f6;
+            margin: 0;
+        }
+        .logo-font {
+            font-family: 'Cinzel', serif;
+        }
+        /* Custom scrollbar for category bar */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out forwards;
+        }
+
+        /* Deep Blue Header color from image */
+        .header-bg {
+            background-color: #004aad;
+        }
+
+        /* Search Section Mixed Gradient */
+        .search-section-bg {
+            background: linear-gradient(135deg, #004aad 0%, #0072ff 25%, #00c6ff 50%, #0072ff 75%, #004aad 100%);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Home Section Background */
+        .home-section-bg {
+            background-color: #e3f2fd;
+            background-image: 
+                radial-gradient(at 0% 0%, #90c9df 0px, transparent 50%),
+                radial-gradient(at 50% 0%, #6ea7db 0px, transparent 50%),
+                radial-gradient(at 100% 0%, #8eb5e5 0px, transparent 50%),
+                radial-gradient(at 0% 50%, #d8e6f1 0px, transparent 50%),
+                radial-gradient(at 100% 50%, #c9e9df 0px, transparent 50%),
+                radial-gradient(at 0% 100%, #f3d1e1 0px, transparent 50%),
+                radial-gradient(at 50% 100%, #f1ebcf 0px, transparent 50%),
+                radial-gradient(at 100% 100%, #a8d9cb 0px, transparent 50%);
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        /* Login/Signup Background */
+        .login-page-bg {
+            background-color: #dfb6ff;
+            background-image: linear-gradient(180deg, #f0e1ff 0%, #dfb6ff 100%);
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        /* Seller Pages Brand Background */
+        .seller-brand-bg {
+            background-color: #c9f2c7;
+        }
+
+        /* Initial Splash Loader Styles - Exactly like attached image */
+        #initial-loader {
+            position: fixed;
+            inset: 0;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+        }
+        #initial-loader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .dot-spinner {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 30px;
+        }
+
+        .dot-spinner div {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: dot-fade 1.2s linear infinite;
+        }
+
+        @keyframes dot-fade {
+            0%, 20%, 80%, 100% { opacity: 0.2; }
+            40% { opacity: 1; }
+        }
+
+        .dot-spinner div:nth-child(1) { top: 0px; left: 36px; animation-delay: 0s; }
+        .dot-spinner div:nth-child(2) { top: 10px; left: 54px; animation-delay: 0.1s; }
+        .dot-spinner div:nth-child(3) { top: 26px; left: 66px; animation-delay: 0.2s; }
+        .dot-spinner div:nth-child(4) { top: 46px; left: 66px; animation-delay: 0.3s; }
+        .dot-spinner div:nth-child(5) { top: 62px; left: 54px; animation-delay: 0.4s; }
+        .dot-spinner div:nth-child(6) { top: 72px; left: 36px; animation-delay: 0.5s; }
+        .dot-spinner div:nth-child(7) { top: 62px; left: 18px; animation-delay: 0.6s; }
+        .dot-spinner div:nth-child(8) { top: 46px; left: 6px; animation-delay: 0.7s; }
+        .dot-spinner div:nth-child(9) { top: 26px; left: 6px; animation-delay: 0.8s; }
+        .dot-spinner div:nth-child(10) { top: 10px; left: 18px; animation-delay: 0.9s; }
+
+        .loading-text {
+            color: #ffffff;
+            font-size: 1.2rem;
+            letter-spacing: 0.3rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .loading-progress-bar {
+            width: 140px;
+            height: 3px;
+            background: #333333;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+
+        .loading-progress-bar::after {
+            content: '';
+            position: absolute;
+            left: -100%;
+            width: 70%;
+            height: 100%;
+            background: #ffffff;
+            animation: slide-progress 2s infinite ease-in-out;
+        }
+
+        @keyframes slide-progress {
+            0% { left: -70%; }
+            100% { left: 100%; }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="initial-loader">
+        <div class="dot-spinner">
+            <div></div><div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div><div></div>
+        </div>
+        <div class="loading-text">LOADING...</div>
+        <div class="loading-progress-bar"></div>
+    </div>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
